@@ -9,7 +9,7 @@
 	url = https://github.com/textmate/MGScopeBar.git
 [submodule "Applications/TextMate/icons"]
 	path = Applications/TextMate/icons
-	url = https://github.com/textmate/document-icons.git
+	url = https://github.com/Proxmiff/textmate-document-icons.git
 [submodule "PlugIns/dialog-1.x"]
 	path = PlugIns/dialog-1.x
 	url = https://github.com/textmate/dialog-1.x.git
