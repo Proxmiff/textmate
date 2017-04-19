@@ -359,22 +359,30 @@ static NSString* const kFoldingsColumnIdentifier  = @"foldings";
 		[self updateGutterViewFont:self]; // trigger update of gutter view’s line number font
 		auto const& styles = theme->gutter_styles();
 
-		gutterView.foregroundColor           = [NSColor colorWithCGColor:styles.foreground];
-		gutterView.backgroundColor           = [NSColor colorWithCGColor:styles.background];
-		gutterView.iconColor                 = [NSColor colorWithCGColor:styles.icons];
-		gutterView.iconHoverColor            = [NSColor colorWithCGColor:styles.iconsHover];
-		gutterView.iconPressedColor          = [NSColor colorWithCGColor:styles.iconsPressed];
-		gutterView.selectionForegroundColor  = [NSColor colorWithCGColor:styles.selectionForeground];
-		gutterView.selectionBackgroundColor  = [NSColor colorWithCGColor:styles.selectionBackground];
-		gutterView.selectionIconColor        = [NSColor colorWithCGColor:styles.selectionIcons];
-		gutterView.selectionIconHoverColor   = [NSColor colorWithCGColor:styles.selectionIconsHover];
-		gutterView.selectionIconPressedColor = [NSColor colorWithCGColor:styles.selectionIconsPressed];
-		gutterView.selectionBorderColor      = [NSColor colorWithCGColor:styles.selectionBorder];
+		gutterView.foregroundColor           = [self blendCGColor: styles.foreground   withHexadecimalColor: @"333333" andFraction: 0.2f];
+		gutterView.backgroundColor           = [self blendCGColor: styles.background   withHexadecimalColor: @"E2E2E2" andFraction: 0.2f];
+		gutterView.iconColor                 = [self blendCGColor: styles.icons        withHexadecimalColor: @"888888" andFraction: 0.2f];
+		gutterView.iconHoverColor            = [self blendCGColor: styles.iconsHover   withHexadecimalColor: @"444444" andFraction: 0.2f];
+		gutterView.iconPressedColor          = [self blendCGColor: styles.iconsPressed withHexadecimalColor: @"444444" andFraction: 0.5f];
+		gutterView.selectionForegroundColor  = [NSColor colorWithCGColor: styles.selectionForeground];
+		gutterView.selectionBackgroundColor  = [NSColor colorWithCGColor: styles.selectionBackground];
+		gutterView.selectionIconColor        = [NSColor colorWithCGColor: styles.selectionIcons];
+		gutterView.selectionIconHoverColor   = [NSColor colorWithCGColor: styles.selectionIconsHover];
+		gutterView.selectionIconPressedColor = [NSColor colorWithCGColor: styles.selectionIconsPressed];
+		gutterView.selectionBorderColor      = [NSColor colorWithCGColor: styles.selectionBorder];
 		gutterScrollView.backgroundColor     = gutterView.backgroundColor;
-		gutterDividerView.activeBackgroundColor = [NSColor colorWithCGColor:styles.divider];
+		gutterDividerView.activeBackgroundColor = [self blendCGColor: styles.divider withHexadecimalColor: @"444444" andFraction: 0.5f];
 
 		[gutterView setNeedsDisplay:YES];
 	}
+}
+
+- (NSColor*) blendCGColor: (CGColor*) color withHexadecimalColor: (NSString*) hex andFraction: (CGFloat) fraction {
+	unsigned int colorCode = 0;
+	NSScanner* scanner = [NSScanner scannerWithString: hex];
+	(void)[scanner scanHexInt: &colorCode];
+	NSColor* colorFromHex = [NSColor colorWithDeviceRed: ((colorCode>>16)&0xFF)/255.0f green: ((colorCode>>8)&0xFF)/255.0f blue: ((colorCode)&0xFF)/255.0f alpha: 1.0f];
+	return [colorFromHex blendedColorWithFraction:fraction ofColor:[NSColor colorWithCGColor: color]];
 }
 
 - (IBAction)toggleLineNumbers:(id)sender
